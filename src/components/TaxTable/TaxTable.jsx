@@ -220,6 +220,63 @@ export const TaxTable = ({ data, onEdit }) => {
       },
 
       {
+        accessorKey: 'gender',
+        filterFn: (row, columnId, filterValue) => {
+          if (!filterValue || filterValue.length === 0) return true;
+          const cell = row.getValue(columnId);
+          const cellNorm = (cell || '').toString().trim().toLowerCase();
+          return filterValue.includes(cellNorm);
+        },
+        header: ({ table }) => (
+          <div className="header-with-filter" ref={headerRefs.gender}>
+            <span>Gender</span>
+            <button
+              className={`filter-icon ${openDropdown === 'gender' ? 'active' : ''} ${
+                (table.getColumn('gender')?.getFilterValue()?.length || 0) > 0
+                  ? 'has-selection'
+                  : ''
+              }`}
+              onClick={() => handleDropdownToggle('gender')}
+              aria-label="Filter gender"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
+              </svg>
+
+              {(table.getColumn('gender')?.getFilterValue()?.length || 0) > 0 && (
+                <span className="selection-badge">
+                  {table.getColumn('gender')?.getFilterValue()?.length}
+                </span>
+              )}
+            </button>
+
+            {openDropdown === 'gender' && (
+              <MultiSelectDropdown
+                column={table.getColumn('gender')}
+                options={genderOptions}
+                isOpen={openDropdown === 'gender'}
+                onClose={() => setOpenDropdown(null)}
+                position="gender"
+              />
+            )}
+          </div>
+        ),
+        cell: (info) => {
+          const gender = info.getValue();
+          const normalized = gender?.toLowerCase();
+          const isMale = normalized === 'male';
+          const isFemale = normalized === 'female';
+
+          return (
+            <div className={`gender-cell ${isMale ? 'male' : ''} ${isFemale ? 'female' : ''}`}>
+              <span className="gender-dot"></span>
+              {gender ? capitalizeFirst(gender) : '-'}
+            </div>
+          );
+        },
+      },
+      
+      {
         accessorKey: 'date',
         filterFn: (row, columnId, filterValue) => {
           if (!filterValue || filterValue.length === 0) return true;
@@ -229,7 +286,7 @@ export const TaxTable = ({ data, onEdit }) => {
         },
         header: ({ table }) => (
           <div className="header-with-filter" ref={headerRefs.date}>
-            <span>Research Date</span>
+            <span>Request Date</span>
             <button
               className={`filter-icon ${openDropdown === 'date' ? 'active' : ''} ${
                 (table.getColumn('date')?.getFilterValue()?.length || 0) > 0
@@ -307,63 +364,6 @@ export const TaxTable = ({ data, onEdit }) => {
           </div>
         ),
         cell: (info) => capitalizeFirst(info.getValue()) || '-',
-      },
-
-      {
-        accessorKey: 'gender',
-        filterFn: (row, columnId, filterValue) => {
-          if (!filterValue || filterValue.length === 0) return true;
-          const cell = row.getValue(columnId);
-          const cellNorm = (cell || '').toString().trim().toLowerCase();
-          return filterValue.includes(cellNorm);
-        },
-        header: ({ table }) => (
-          <div className="header-with-filter" ref={headerRefs.gender}>
-            <span>Gender</span>
-            <button
-              className={`filter-icon ${openDropdown === 'gender' ? 'active' : ''} ${
-                (table.getColumn('gender')?.getFilterValue()?.length || 0) > 0
-                  ? 'has-selection'
-                  : ''
-              }`}
-              onClick={() => handleDropdownToggle('gender')}
-              aria-label="Filter gender"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
-              </svg>
-
-              {(table.getColumn('gender')?.getFilterValue()?.length || 0) > 0 && (
-                <span className="selection-badge">
-                  {table.getColumn('gender')?.getFilterValue()?.length}
-                </span>
-              )}
-            </button>
-
-            {openDropdown === 'gender' && (
-              <MultiSelectDropdown
-                column={table.getColumn('gender')}
-                options={genderOptions}
-                isOpen={openDropdown === 'gender'}
-                onClose={() => setOpenDropdown(null)}
-                position="gender"
-              />
-            )}
-          </div>
-        ),
-        cell: (info) => {
-          const gender = info.getValue();
-          const normalized = gender?.toLowerCase();
-          const isMale = normalized === 'male';
-          const isFemale = normalized === 'female';
-
-          return (
-            <div className={`gender-cell ${isMale ? 'male' : ''} ${isFemale ? 'female' : ''}`}>
-              <span className="gender-dot"></span>
-              {gender ? capitalizeFirst(gender) : '-'}
-            </div>
-          );
-        },
       },
 
       {
