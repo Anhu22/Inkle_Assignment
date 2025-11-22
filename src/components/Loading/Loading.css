@@ -1,0 +1,32 @@
+/* Colorful spinner and loading container */
+.loading-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+}
+
+.spinner {
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	border: 5px solid rgba(0,0,0,0.06);
+	border-top: 5px solid var(--primary);
+	animation: spin 0.9s linear infinite;
+	box-shadow: 0 6px 18px rgba(99,102,241,0.12);
+}
+
+.spinner.accent {
+	border-top-color: var(--accent);
+}
+
+.loading-text {
+	margin-left: 0.75rem;
+	color: var(--muted);
+	font-weight: 600;
+}
+
+@keyframes spin {
+	to { transform: rotate(360deg); }
+}
+
